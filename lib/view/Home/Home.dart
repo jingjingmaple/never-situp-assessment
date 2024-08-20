@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:never_situp_assessment/bloc/Product/model/Department.model.dart';
-import 'package:never_situp_assessment/bloc/Product/model/Product.model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:never_situp_assessment/bloc/Product/product_bloc.dart';
 import 'package:never_situp_assessment/view/Home/Widget/DepartmentCard.dart';
 import 'package:never_situp_assessment/view/Home/Widget/HeaderText.dart';
 import 'package:never_situp_assessment/view/Home/Widget/ProductCard.dart';
+import 'package:never_situp_assessment/view/Home/Widget/ShrimmerLoading.dart';
+import 'package:never_situp_assessment/view/Home/Widget/ErrorDialog.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    context.read<ProductBloc>().add(GetDepartment());
     return MaterialApp(
       title: 'Product List',
       theme: ThemeData(
@@ -18,6 +21,7 @@ class HomePage extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const LandingPage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -32,17 +36,6 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
-    ProductModel productMockItem = const ProductModel(
-        name: 'Healthy Cat',
-        imageUrl: 'https://loremflickr.com/640/480',
-        desc:
-            "Boston's most advanced compression wear technology increases muscle oxygenation, stabilizes active muscles",
-        price: '619',
-        type: 'normal',
-        id: "1",
-        departmentId: "1");
-    DepartmentModel departmentMockItem = const DepartmentModel(
-        id: "1", imageUrl: "https://loremflickr.com/640/480", name: "Movies");
     return Scaffold(
       appBar: null,
       body: SafeArea(
@@ -56,42 +49,77 @@ class _LandingPageState extends State<LandingPage> {
             const SizedBox(
               height: 5,
             ),
-            Container(
-                height: 150,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    DepartmentCard(
-                      departmentItem: departmentMockItem,
-                    ),
-                    DepartmentCard(
-                      departmentItem: departmentMockItem,
-                    ),
-                    DepartmentCard(
-                      departmentItem: departmentMockItem,
-                    )
-                  ],
-                )),
+            BlocConsumer<ProductBloc, ProductState>(
+              buildWhen: (prev, current) {
+                return prev.departmentList != current.departmentList;
+              },
+                builder: (context, state) {
+                  print("re-render");
+                    return Container(
+                        height: 150,
+                        child: ListView.builder(
+                          addRepaintBoundaries: false,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: state.departmentList?.length ?? 1,
+                          itemBuilder: (BuildContext context, int index) {
+                            return
+                              ShimmerLoading(isLoading: state.departmentList == null, child: DepartmentCard(
+                                departmentItem: state.departmentList != null ? state.departmentList![index] : null,
+                              ),)
+                              ;
+                          },
+
+                        ));
+
+
+            }, listener: (BuildContext context, ProductState state) {
+                  print('state $state');
+            },)
+            ,
             const SizedBox(
               height: 5,
             ),
-            const HeaderText(title: 'Product list: Movies'),
+            BlocBuilder<ProductBloc, ProductState>(
+              builder: (context, state) {
+                return HeaderText(title: 'Product list: ${state.activeDepartment?.name ?? '-'}');
+              },
+            ),
+
+
             const SizedBox(
               height: 5,
             ),
             Expanded(
-              child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 3 / 4,
-                      mainAxisSpacing: 10,
-                      crossAxisSpacing: 10),
-                  itemCount: 300,
-                  itemBuilder: (BuildContext context, int index) {
-                    return ProductCard(
-                      productItem: productMockItem,
-                    );
-                  }),
+              child:
+              BlocConsumer<ProductBloc, ProductState>(
+                buildWhen: (prev, current) {
+                  if (current.isGetProductError) {
+                    showErrorDialog(context, title: "Error", description: current?.getProductErrorMessage ?? "Can't get product data");
+                  }
+                  return prev.productList != current.productList;
+                },
+                builder: (context, state) {
+                  print('state producrtList ${state.productList}');
+                  return GridView.builder(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 3 / 4,
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 10),
+                      itemCount: state.productList?.length ?? 1,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ShimmerLoading(isLoading: state.productList == null, child: ProductCard(
+                          productItem: state.productList != null ? state.productList![index] : null,
+                        ),)  ;
+                      });
+
+                }, listener: (BuildContext context, ProductState state) {
+                // print('state $state');
+                // if (state.isGetProductError) {
+                //   showErrorDialog(context, title: "Error", description: state?.getProductErrorMessage ?? "Can't get product data");
+                // }
+              },)
+              ,
             ),
           ],
         ),

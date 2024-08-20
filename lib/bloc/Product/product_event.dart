@@ -1,7 +1,7 @@
 part of 'product_bloc.dart';
 
 @immutable
-abstract class ProductEvent {
+abstract class ProductEvent extends Equatable {
   const ProductEvent();
 
   @override
@@ -9,6 +9,7 @@ abstract class ProductEvent {
 }
 
 class GetDepartment extends ProductEvent {
+  const GetDepartment();
 }
 
 class GetProduct extends ProductEvent {
@@ -16,9 +17,21 @@ class GetProduct extends ProductEvent {
       {required this.departmentId,
       });
 
-  final int departmentId;
+  final String departmentId;
 
   @override
   List<Object> get props =>
       [departmentId];
+}
+
+class SetActiveDepartment extends ProductEvent {
+  const SetActiveDepartment(
+      {required this.department,
+      });
+
+  final DepartmentModel department;
+
+  @override
+  List<Object> get props =>
+      [department];
 }

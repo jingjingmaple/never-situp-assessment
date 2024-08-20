@@ -6,7 +6,7 @@ import 'package:never_situp_assessment/view/Home/Widget/ProductDescription.dart'
 
 class ProductCard extends StatelessWidget {
   const ProductCard({super.key, required this.productItem});
-  final ProductModel productItem;
+  final ProductModel? productItem;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class ProductCard extends StatelessWidget {
                   AspectRatio(
                       aspectRatio: 4 / 3,
                       child: CachedNetworkImage(
-                        imageUrl: productItem.imageUrl,
+                        imageUrl: '${productItem?.imageUrl}?${DateTime.now().millisecondsSinceEpoch.toString()}',
                         placeholder: (context, url) =>
                             const CircularProgressIndicator(),
                         errorWidget: (context, url, error) =>
@@ -35,12 +35,12 @@ class ProductCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          productItem.name,
+                          productItem?.name ?? '',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: CustomTextTheme.title,),
                         Text(
-                          productItem.desc,
+                          productItem?.desc ?? '',
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                           style: CustomTextTheme.description,
@@ -55,7 +55,7 @@ class ProductCard extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.all(2),
                     child: Text(
-                      '฿ ${productItem.price}',
+                      '฿ ${productItem?.price}',
                       style:
                           TextStyle(fontWeight: FontWeight.w300, fontSize: 16),
                     ),
@@ -64,16 +64,16 @@ class ProductCard extends StatelessWidget {
           ),
         ),
         onTap: () {
-          _showMyDialog(context);
+          if (productItem != null) _showProductDialog(context);
         });
   }
 
-  Future<void> _showMyDialog(BuildContext context) async {
+  Future<void> _showProductDialog(BuildContext context) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return ProductDescription(productItem: productItem,);
+        return ProductDescription(productItem: productItem!,);
       },
     );
   }
