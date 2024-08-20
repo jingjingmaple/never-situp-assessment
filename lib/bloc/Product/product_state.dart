@@ -1,19 +1,33 @@
 part of 'product_bloc.dart';
 
-@immutable
-abstract class ProductState {
-  ProductState({ this.currentDepartment, this.productResults, this.departmentResults});
-  final dynamic departmentResults;
-  final dynamic productResults;
-  final dynamic currentDepartment;
-}
+class ProductState extends Equatable {
+  const ProductState({
+    this.departmentList = null,
+    this.productList=null,
+    this.activeDepartment=null,
 
-class ProductInitial extends ProductState {}
+  });
 
-class UpdatedState extends ProductState {
-  final dynamic departmentResults;
-  final dynamic productResults;
-  final dynamic currentDepartment;
+  final List<DepartmentModel>? departmentList;
+  final List<ProductModel>? productList;
+  final DepartmentModel? activeDepartment;
 
-  UpdatedState({ this.departmentResults, this.productResults, this.currentDepartment });
+
+
+  ProductState copyWith({
+    List<DepartmentModel>? departmentList,
+    List<ProductModel>? productList,
+    DepartmentModel? activeDepartment,
+
+  }) {
+    return ProductState(
+      departmentList: departmentList ?? this.departmentList,
+      productList: productList ?? this.productList,
+      activeDepartment: activeDepartment ?? this.activeDepartment,
+    );
+  }
+
+
+  @override
+  List<dynamic> get props => [departmentList, productList, activeDepartment];
 }
