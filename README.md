@@ -1,5 +1,26 @@
 # never_situp_assessment
 
+## Project structure ##
+- **lib**
+  - **bloc** ***--- store BLoC state management (business logic) for this app***
+    - **Product** ***--- store BLoC for each module***
+      - **model** ***--- store JSON data model for each BLoC***
+      - *product_bloc.dart* ***--- BLoC business logic***
+      - *product_event.dart* ***--- define BLoC event(s)***
+      - *product_state.dart* ***--- define state variables for this BLoC***
+  - **config** ***--- store config or constant***
+    - *API.dart* ***--- store API configurations***
+    - *Color.dart* ***--- store defined Color theme***
+    - *Text.dart* ***--- store defined Text theme***
+  - **service** ***--- store API services***
+    - *MainAPI.dart* ***--- Main API Service***
+  - **view** ***--- store All UI Widget***
+    - **Home** ***--- store UI by page or module***
+      - **Widget** ***--- store Widget component of each page / module***
+      - *Home.dart* ***--- Homepage UI container***
+  - *main.dart* ***--- Entry point of the app***
+- *app_debug.apk* ***--- Demo Android APK installation file***
+
 A new Flutter project.
 
 ## Getting Started
