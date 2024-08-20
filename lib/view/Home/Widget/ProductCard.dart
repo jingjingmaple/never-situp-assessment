@@ -23,7 +23,8 @@ class ProductCard extends StatelessWidget {
                   AspectRatio(
                       aspectRatio: 4 / 3,
                       child: CachedNetworkImage(
-                        imageUrl: '${productItem?.imageUrl}?${DateTime.now().millisecondsSinceEpoch.toString()}',
+                        imageUrl:
+                            '${productItem?.imageUrl}?${DateTime.now().millisecondsSinceEpoch.toString()}',
                         placeholder: (context, url) =>
                             const CircularProgressIndicator(),
                         errorWidget: (context, url, error) =>
@@ -38,7 +39,8 @@ class ProductCard extends StatelessWidget {
                           productItem?.name ?? '',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: CustomTextTheme.title,),
+                          style: CustomTextTheme.title,
+                        ),
                         Text(
                           productItem?.desc ?? '',
                           maxLines: 3,
@@ -73,7 +75,9 @@ class ProductCard extends StatelessWidget {
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return ProductDescription(productItem: productItem!,);
+        return ProductDescription(
+          productItem: productItem!,
+        );
       },
     );
   }

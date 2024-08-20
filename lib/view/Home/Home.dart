@@ -53,73 +53,73 @@ class _LandingPageState extends State<LandingPage> {
               buildWhen: (prev, current) {
                 return prev.departmentList != current.departmentList;
               },
-                builder: (context, state) {
-                  print("re-render");
-                    return Container(
-                        height: 150,
-                        child: ListView.builder(
-                          addRepaintBoundaries: false,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: state.departmentList?.length ?? 1,
-                          itemBuilder: (BuildContext context, int index) {
-                            return
-                              ShimmerLoading(isLoading: state.departmentList == null, child: DepartmentCard(
-                                departmentItem: state.departmentList != null ? state.departmentList![index] : null,
-                              ),)
-                              ;
-                          },
-
-                        ));
-
-
-            }, listener: (BuildContext context, ProductState state) {
-                  print('state $state');
-            },)
-            ,
+              builder: (context, state) {
+                return Container(
+                    height: 150,
+                    child: ListView.builder(
+                      addRepaintBoundaries: false,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: state.departmentList?.length ?? 1,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ShimmerLoading(
+                          isLoading: state.departmentList == null,
+                          child: DepartmentCard(
+                            departmentItem: state.departmentList != null
+                                ? state.departmentList![index]
+                                : null,
+                          ),
+                        );
+                      },
+                    ));
+              },
+              listener: (BuildContext context, ProductState state) {},
+            ),
             const SizedBox(
               height: 5,
             ),
             BlocBuilder<ProductBloc, ProductState>(
               builder: (context, state) {
-                return HeaderText(title: 'Product list: ${state.activeDepartment?.name ?? '-'}');
+                return HeaderText(
+                    title:
+                        'Product list: ${state.activeDepartment?.name ?? '-'}');
               },
             ),
-
-
             const SizedBox(
               height: 5,
             ),
             Expanded(
-              child:
-              BlocConsumer<ProductBloc, ProductState>(
+              child: BlocConsumer<ProductBloc, ProductState>(
                 buildWhen: (prev, current) {
                   if (current.isGetProductError) {
-                    showErrorDialog(context, title: "Error", description: current?.getProductErrorMessage ?? "Can't get product data");
+                    showErrorDialog(context,
+                        title: "Error",
+                        description: current?.getProductErrorMessage ??
+                            "Can't get product data");
                   }
                   return prev.productList != current.productList;
                 },
                 builder: (context, state) {
-                  print('state producrtList ${state.productList}');
                   return GridView.builder(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 3 / 4,
-                          mainAxisSpacing: 10,
-                          crossAxisSpacing: 10),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 3 / 4,
+                              mainAxisSpacing: 10,
+                              crossAxisSpacing: 10),
                       itemCount: state.productList?.length ?? 1,
                       itemBuilder: (BuildContext context, int index) {
-                        return ShimmerLoading(isLoading: state.productList == null, child: ProductCard(
-                          productItem: state.productList != null ? state.productList![index] : null,
-                        ),)  ;
+                        return ShimmerLoading(
+                          isLoading: state.productList == null,
+                          child: ProductCard(
+                            productItem: state.productList != null
+                                ? state.productList![index]
+                                : null,
+                          ),
+                        );
                       });
-
-                }, listener: (BuildContext context, ProductState state) {
-                // print('state $state');
-                // if (state.isGetProductError) {
-                //   showErrorDialog(context, title: "Error", description: state?.getProductErrorMessage ?? "Can't get product data");
-                // }
-              },)
-              ,
+                },
+                listener: (BuildContext context, ProductState state) {},
+              ),
             ),
           ],
         ),
